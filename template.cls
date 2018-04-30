@@ -2,7 +2,6 @@
 \ProvidesClass{template}[2018/4/24]
 \LoadClass{ctexart}
 
-
 \setCJKfamilyfont{BOLD}{Microsoft YaHei}
 \setCJKfamilyfont{SONG}{Adobe Fangsong Std}
 \newcommand{\BOLD}{\CJKfamily{BOLD}}
@@ -11,7 +10,7 @@
 \setlength{\parindent}{2em} 
 % use fontawesome
 
-
+\usepackage{longtable,booktabs}
 \usepackage[usenames, dvipsnames]{color}
 \definecolor{mygray}{gray}{0.6}
 \RequirePackage[
@@ -23,6 +22,13 @@
 ]{geometry}
 
 \RequirePackage{titlesec}
+\usepackage{etoolbox}
+
+\makeatletter
+\patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
+\patchcmd{\ttlh@hang}{\noindent}{}{}{}
+\makeatother
+
 \RequirePackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhead{}
@@ -30,11 +36,10 @@
 \fancyfoot{}
 \fancyfoot[LE,RO]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
+
 \RequirePackage{fontawesome}
 % set baselinestretch
 \renewcommand{\baselinestretch}{1.3}    
-% \renewcommand{\thesection}{\arabic{section}.}
 
 
 \titleformat{\section}         % Customise the \section command 
@@ -43,12 +48,20 @@
   {\thesection}{1em}                      % Can be used to give a prefix to all sections, like 'Section ...'
   {}                           % Can be used to insert code before the heading
   {}                 % Inserts a horizontal line after the heading
-% \titlespacing*{\section}{0cm}{*1.8}{*1.8}
-
+  
 \titleformat{\subsection}
-  {\large\raggedright}
-  {}{0em}
+  {\large\raggedright\scshape}
+  {\thesubsection}{1em}
   {}
-\titlespacing*{\subsection}{0cm}{*1.8}{*0.6}
+  {}
+\titlespacing{\section}{0cm}{*1.8}{*1.8}
+% \renewcommand{\thesection}{\arabic{section}}
+
+
+\titlespacing{\subsection}{0cm}{*1.8}{*0.6}
+\titlespacing{\subsubsection}{2em}{*1.8}{*0.6}
+
+% \renewcommand{\subsection}{\arabic{section}.\arabic{subsection} }
+% \renewcommand{\subsubsection}{\arabic{subsubsection}.}
 
 
