@@ -13,7 +13,8 @@
 \usepackage{longtable,booktabs}
 \usepackage[usenames, dvipsnames]{color}
 \usepackage{caption}
-
+\usepackage{booktabs}
+\usepackage{subcaption}
 \definecolor{mygray}{gray}{0.6}
 \RequirePackage[
 	a4paper,

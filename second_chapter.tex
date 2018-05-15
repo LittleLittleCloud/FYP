@@ -1,6 +1,6 @@
-\documentclass[12pt]{template}
-\usepackage{fancyhdr}
-\begin{document}
+% \documentclass[12pt]{template}
+% \usepackage{fancyhdr}
+% \begin{document}
 \section{使用事件描述预测事件参与人数}
 \subsection{概述}
 上一章证明了事件描述对事件参与人数有显著的影响，因此，通过事件描述来预测参与人数便是顺理成章的了。 所以，接下来本章会提出三种预测器来预测二者之间的关系。这三种预测器分别是线性回归，带卷积层的神经网络和带GRU的神经网络。接下来，本章将分别对这三个预测器进行详细的描述。
@@ -53,10 +53,83 @@ loss=\frac{1}{N}\displaystyle\sum_{i=1}^{N}\left\{(y_i-y'_i)^2\right\}+\alpha||w
     \caption{带卷积层的神经网络}
     \captionsetup{font=small,margin=30pt}\caption*{图中灰色的方块表示向量，蓝色的表示网络，红色的圆点表示算符。在计算过程中，输入是文本序列，然后首先经过词向量层转换成词向量，然后进行卷积和池化(\textit{max-pooling})，将结果拼接起来，然后使用双曲正切(\textit{tanh})归一话，最后经过一个带隐含层的线性前馈神经网络输出最终结果。}
     \label{f21}
-\end{figure}
+\end{figure} 
 
 \subsection{带GRU的神经网络}
-在上一小节，我们使用了卷积层对原始输入文本转换成的词向量进行了处理，得到了一个新的特征向量。这个过程也可以看成是定义了一个函数\(f:R^{m\times k}\mapsto R^n\),将原本在\(R^{m\times k}\)空间中的样本映射/编码到了\(R^n\)中。这样做的目的是可以方便后续处理，这里我们相当于把一条文本转换成了一个向量，接下来的工作就在这向量上展开了。但如何去找到一个这样的函数\textit{f}，则是这种方法成败的关键。在这篇论文中，我们希望\textit{f}有如下的特点：1）能处理序列信息。2）能在转换过程中尽量保留原始信息。3）方便，易于实现。而我们之前使用的卷积层并不完全满足这三个条件。首先，它能处理序列信息，但只能考量到同在一个窗口大小内的序列，而且就算在同一个窗口内，它也不会考虑其出现顺序。换而言之，它能处理序列信息是基于这些词出现在不同的窗口来保证的，如果不能合适的设置窗口大小，就不能捕获我们想要的序列信息。而在文本处理中，如何设置窗口大小是件困难的事情。其次，因为池化层的存在，它在转换过程中能保留多少原始信息是存疑的。最后，它实现起来挺容易，这点没有问题。
+在上一小节，我们使用了卷积层对原始输入文本转换成的词向量进行了处理，得到了一个新的特征向量。这个过程也可以看成是定义了一个函数\(f:R^{m\times k}\mapsto R^n\),将原本在\(R^{m\times k}\)空间中的样本编码到了\(R^n\)中。这样做的目的是可以方便后续处理，这里我们相当于把一条文本转换成了一个向量，接下来的工作就在这向量上展开了。但如何去找到一个这样的函数\textit{f}，则是这种方法成败的关键。在这篇论文中，我们希望\textit{f}有如下的特点：1）能处理序列信息。2）能在转换过程中尽量保留原始信息。3）方便，易于实现。而我们之前使用的卷积层并不完全满足这三个条件。首先，它能处理序列信息，但只能考量到同在一个窗口大小内的序列，而且就算在同一个窗口内，它也不会考虑其出现顺序。换而言之，它能处理序列信息是基于这些词出现在不同的窗口来保证的，如果不能合适的设置窗口大小，就不能捕获我们想要的序列信息。而在文本处理中，如何设置窗口大小是件困难的事情。其次，因为池化层的存在，它在转换过程中能保留多少原始信息是存疑的。最后，它实现起来挺容易，这点没有问题。
 
-而另一种处理时序信息的网络结构循环神经网络，则可以很好的满足上面三个条件。
-\end{document} 
+而另一种处理时序信息的网络结构循环神经网络，则可以很好的满足上面三个条件。所以近年来这种网络也在自然语言处理上得到了广泛的应用，例如在编码-解码模型（encoder-decoder）中，循环神经网络就常常被用在编码/解码环节。同样在这里，我们使用循环神经网络的特殊形式\textit{GRU}\ref{DBLP:journals/corr/ChungGCB14}作为编码器。
+
+\subsubsection{GRU}
+GRU\textit{(gated recurrent network，图\ref{f22})}是为了克服循环神经网络中无法很好的处理远距离依赖而提出的\textit{LSTM}的一个变体。它相较于\textit{LSTM}来说更加简单，但仍保持着不错的效果\ref{DBLP:journals/corr/ChungGCB14}。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=13.5cm]{GRU.png}
+    \caption{GRU}
+    \captionsetup{font=small,margin=30pt}\caption*{图中\(z[t]\)为更新门，\(r[t]\)为重置门。\(h[t]\)为当前\textit{t}时刻的隐含状态，橙色的圆点为算符，蓝色方框为某非线性函数}
+    \label{f22}
+\end{figure}
+
+\subsubsection{GRU的前向传播}
+根据图\ref{f22}，我们可以得到如下GRU的前向传播公式：
+\begin{equation}
+z_t=\sigma_z(W_zx_t+U_zh_{t-1}+b_z) 
+\end{equation}
+\begin{equation}
+r_t=\sigma_r(W_rx_t+U_rh_{t-1}+b_r) 
+\end{equation}
+\begin{equation}
+h_t=(1-z_t)\cdot h_{t-1}+z_t\cdot tanh(W_hx_t+U_h(r_t\cdot h_{t-1})+b_h)
+\end{equation}
+
+其中，\textit{W，U，b}都是参数。\(x_t\)为输入向量，\(h_t\)为输出向量，\(z_t,r_t\)为更新门和重置门向量。同样的，根据链式法则，我们可以得到其反向传播公式。
+\subsubsection{带GRU的神经网络结构}
+将之前的神经网络的卷积层替换成本小节介绍的GRU，我们便得到了另一个新的预测器(如图\ref{f23})。可以看出，该预测器的结构与之前的神经网络十分相似，仅在编码环节有所不同。
+\newpage
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=13.5cm]{gru_ranker.png}
+    \caption{带GRU的神经网络}
+    \captionsetup{font=small,margin=30pt}\caption*{图中各色块和圆点的意义同图\ref{f21}。在计算过程中，我们首先将序列转换成词向量，然后使用GRU进行编码，获得一个新的向量(\textit{encode vector}),然后使用双曲正切(\textit{tanh})归一化，最后经过一个带隐含层的线性前馈神经网络输出最终结果。}
+    \label{f23}
+\end{figure}
+
+\subsection{实验结果}
+在本小节中，我们会对本章所介绍的三个预测器在真实的数据集上进行评估。我们所用的数据集来自meetup\footnote{www.meetup.com}的LA市，包含超过20万个事件。我们采用百分之八十的事件训练预测器，并用剩下的数据对预测器进行评估。实验结果如图\ref{f24}所示。
+
+
+\begin{table}[htbp]
+\caption{\label{t21}网络参数设置}
+\begin{center}
+\begin{tabular*}{\linewidth}{p{0.333\linewidth}p{0.333\linewidth}p{0.333\linewidth}}
+\toprule
+    参数         & 带GRU的神经网络 & 带卷积层的神经网络 \\
+\midrule
+    词向量维度      & 300       & 300       \\
+    GRU的\(h_t\)维度   & 600       & 无         \\
+    卷积核窗口大小    & 无         & 1，2，3，4，5 \\
+    线性神经网络隐层维度 & 300       & 300      \\ 
+\bottomrule
+\end{tabular*}
+\end{center}
+\end{table}
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{.4\textwidth}
+		\includegraphics[width=\textwidth]{trainloss.png}
+		\caption{train MSE loss}
+	\end{subfigure}
+%%%%%%%%%%%%%%
+	\begin{subfigure}{.4\textwidth}
+		\includegraphics[width=\textwidth]{testloss.png}
+		\caption{test MSE loss}
+	\end{subfigure}
+    \caption{实验结果}
+    \label{f24}
+\end{figure}
+
+从图中我们可以看出，使用GRU作为编码器的神经网络的表现最好，其次是线性预测器，使用卷积层的神经网络表现最糟糕。这点是出乎意料的，原因可能是参数没有调好，以及池化层的存在造成了太多的信息丢失。而另一点值得注意的是尽管GRU在此次实验中的表现最好，但是其结果仍然不是特别理想（从测试环节损失函数的曲线的抖动也可以看出这一点）。这是因为在预测过程中我们仅使用了事件描述这一属性，而没有参考其他属性，例如事件种类，所在组别，举办时间，举办地点，举办者等。属性的缺失限制了这些预测器的上限。如果在预测时加上了这些属性，参考第一章，可以预见准确度应该会有所提升，但由于本文研究对象仅限于事件描述，所以只能到此为止了。 
+
+
+% \end{document} 
