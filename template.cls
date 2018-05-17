@@ -1,6 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{template}[2018/4/24]
-\LoadClass[12pt]{ctexart}
+\LoadClass[12pt,twoside]{ctexart}
 \setCJKfamilyfont{BOLD}{Microsoft YaHei}
 % \setCJKfamilyfont{SONG}{Adobe Fangsong Std}
 \newcommand{\BOLD}{\CJKfamily{BOLD}}
@@ -9,7 +9,6 @@
 \setlength{\parindent}{2em} 
 % use fontawesome
 \usepackage{fancyhdr}
-
 \usepackage{longtable,booktabs}
 \usepackage[usenames, dvipsnames]{color}
 \usepackage{caption}
@@ -20,9 +19,8 @@
 \renewcommand{\thefigure}{\thesection-\arabic{figure}}
 \renewcommand{\theequation}{\thesection-\arabic{equation}}
 \renewcommand{\thetable}{\thesection-\arabic{table}}
-\fontsize{12pt}{18pt}\selectfont
-
-\definecolor{mygray}{gray}{0.6}
+\fontsize{12pt}{20.5pt}\selectfont
+\linespread{1.3}\selectfont
 \RequirePackage[
 	a4paper,
 	left=2.6cm,
@@ -30,6 +28,9 @@
 	top=3cm,
 	bottom=2.5cm,
 ]{geometry}
+\setlength{\voffset}{0.32cm}%40 
+\setlength{\headsep}{.5cm}%40 
+\setlength{\textheight}{241mm} % 297-30-25
 
 \RequirePackage{titlesec}
 \usepackage{etoolbox}
@@ -40,22 +41,33 @@
 \makeatother
 
 \RequirePackage{fancyhdr}
-\pagestyle{fancy}
 \fancyhead{}
-\fancyhead[CH]{\small\leftmark}
+\fancyhead[CO]{\fontsize{9.5pt}{18pt}\selectfont \leftmark}
+\fancyhead[CE]{\fontsize{9.5pt}{18pt}\selectfont 西安交通大学本科毕业设计（论文）}
 \fancyfoot{}
-\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LE,RO]{\fontsize{9.5pt}{14pt}\selectfont \thepage}
+
 \renewcommand{\headrulewidth}{0.4pt}
 
 \renewcommand{\footnotesize}{\fontsize{9pt}{11pt}\selectfont}
+\makeatletter %双线页眉                                        
+\def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi%
+\hrule\@height 0.5pt \@width\headwidth\vskip .75pt%上面线为0.5pt粗  
+\hrule\@height 0.5pt\@width\headwidth  %下面0.5pt粗            
+\vskip-2\headrulewidth\vskip-0.5pt}      %两条线的距离0.5pt        
+ \vspace{0.5cm}}     %双线与下面正文之间的垂直间距              
+\makeatother   
+\pagestyle{fancy}
+
 % Circled footnote number
 % http://tex.stackexchange.com/questions/133264/circled-footnote-symbols-with-pifont-showing-arrows-instead-of-circled-numbers
 \usepackage{tikz}
 \newcommand*\circled[1]{
     \tikz[baseline=(char.base)]
-    \node[shape=circle,draw,inner sep=0.5pt,minimum size=8pt] (char) {#1};
+    \node[shape=circle,draw,inner sep=0.5pt,minimum size=5pt] (char) {#1};
 }
 \renewcommand\thefootnote{\protect\circled{\arabic{footnote}}}
+\setlength{\footnotesep}{.5\baselineskip}
 \renewcommand{\footnoterule}{%
   \kern -3pt
   \hrule width 0.25\paperwidth height 0.5pt
@@ -68,7 +80,6 @@
                                % small capitals (\scshape) and left aligned (\raggedright)
   {\thesection}{1em}                      % Can be used to give a prefix to all sections, like 'Section ...'
   {}                           % Can be used to insert code before the heading
-  {}                 % Inserts a horizontal line after the heading
   
 \titleformat{\subsection}
   {\large\raggedright\scshape}
@@ -83,13 +94,21 @@
   {}
   {}
 
-\titlespacing{\section}{0cm}{*1.8}{*1.8}
+% \titlespacing{\section}{0cm}{*1.8}{*1.8}
+\titlespacing{\section}{0em}{0em}{1\baselineskip}
 % \renewcommand{\thesection}{\arabic{section}}
 
 
-\titlespacing{\subsection}{0cm}{*1.8}{*0.6}
+\titlespacing{\subsection}{0cm}{1\baselineskip}{.5\baselineskip}
 
 % \renewcommand{\subsection}{\arabic{section}.\arabic{subsection} }
 % \renewcommand{\subsubsection}{\arabic{subsubsection}.}
 
 
+\let\oldtable=\table
+\renewcommand\table[1][]{
+    \vskip0.25\baselineskip
+    \oldtable[#1]
+    \small
+    \renewcommand{\arraystretch}{1.5}
+}
