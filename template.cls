@@ -1,11 +1,10 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{template}[2018/4/24]
-\LoadClass{ctexart}
-
+\LoadClass[12pt]{ctexart}
 \setCJKfamilyfont{BOLD}{Microsoft YaHei}
-\setCJKfamilyfont{SONG}{Adobe Fangsong Std}
+% \setCJKfamilyfont{SONG}{Adobe Fangsong Std}
 \newcommand{\BOLD}{\CJKfamily{BOLD}}
-\newcommand{\SONG}{\CJKfamily{SONG}}
+% \newcommand{\SONG}{\CJKfamily{SONG}}
 % disable indent globally
 \setlength{\parindent}{2em} 
 % use fontawesome
@@ -18,7 +17,10 @@
 \usepackage{subcaption}
 \usepackage{amsmath}
 \numberwithin{equation}{section}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
 \renewcommand{\theequation}{\thesection-\arabic{equation}}
+\renewcommand{\thetable}{\thesection-\arabic{table}}
+\fontsize{12pt}{18pt}\selectfont
 
 \definecolor{mygray}{gray}{0.6}
 \RequirePackage[
@@ -40,14 +42,25 @@
 \RequirePackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhead{}
-\fancyhead[CH]{\textcolor{mygray} \leftmark}
+\fancyhead[CH]{\small\leftmark}
 \fancyfoot{}
 \fancyfoot[LE,RO]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
-\RequirePackage{fontawesome}
-% set baselinestretch
-\renewcommand{\baselinestretch}{1.3}    
+\renewcommand{\footnotesize}{\fontsize{9pt}{11pt}\selectfont}
+% Circled footnote number
+% http://tex.stackexchange.com/questions/133264/circled-footnote-symbols-with-pifont-showing-arrows-instead-of-circled-numbers
+\usepackage{tikz}
+\newcommand*\circled[1]{
+    \tikz[baseline=(char.base)]
+    \node[shape=circle,draw,inner sep=0.5pt,minimum size=8pt] (char) {#1};
+}
+\renewcommand\thefootnote{\protect\circled{\arabic{footnote}}}
+\renewcommand{\footnoterule}{%
+  \kern -3pt
+  \hrule width 0.25\paperwidth height 0.5pt
+  \kern 2pt
+}
 
 
 \titleformat{\section}         % Customise the \section command 
@@ -62,12 +75,19 @@
   {\thesubsection}{1em}
   {}
   {}
+\titlespacing{\subsubsection}{2em}{*1.8}{*0.6}
+
+\titleformat{\subsubsection}
+  {\normalsize\scshape}
+  {\thesubsubsection}{1em}
+  {}
+  {}
+
 \titlespacing{\section}{0cm}{*1.8}{*1.8}
 % \renewcommand{\thesection}{\arabic{section}}
 
 
 \titlespacing{\subsection}{0cm}{*1.8}{*0.6}
-\titlespacing{\subsubsection}{2em}{*1.8}{*0.6}
 
 % \renewcommand{\subsection}{\arabic{section}.\arabic{subsection} }
 % \renewcommand{\subsubsection}{\arabic{subsubsection}.}
