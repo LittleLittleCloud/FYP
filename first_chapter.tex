@@ -1,7 +1,6 @@
-% \documentclass[12pt]{template}
-% \usepackage{fancyhdr}
+\documentclass[12pt]{template}
 
-% \begin{document}   
+\begin{document}   
 \section{事件描述对事件参与人数的影响} 
 \subsection{概述}  
 在\textit{EBSN}中，对于一个组织者，一个非常重要的问题就是如何使自己的活动更受欢迎，借而吸引更多的人参加。而决定一件事件的属性则是相当繁复的，例如事件主题，举办时间，地点，所在组，事件描述等。作为这些属性中自由度最大的属性之一，问题描述在提高事件吸引力上所起的作用是相当显著的。例如下面
@@ -31,20 +30,21 @@
 \subsubsection{数据集}
 
 meetup\footnote{http://www.meetup.com/about}，和豆瓣小组类似，是一家提供在线组织活动的平台。\textit{meetup}中有三个基本对象：用户，小组，事件。具有相同兴趣的用户聚在一起组成小组，而用户也可以在小组中发布事件。用户通过RSVP来回复是否参与该事件。有些小组内的事件仅开放给组员参加，有些则对公众开放。我们使用了meetup上的api爬取了meetup在LA的部分数据，包括当地的组，组内成员信息及组的历史事件。具体信息如表(\ref{t1})。
-
-\begin{longtable}[HTBP]{@{}lc@{}}
+\begin{table}[htbp]
+  \label{t1}
+  \caption{LA中近两年的meetup数据}
+  \begin{center}
+    \begin{tabular*}{\linewidth}{p{0.5\linewidth}p{0.5\linewidth}}
 \toprule
-& LA\tabularnewline
+    & LA\\
 \midrule
-\endhead
-Users & 172673\tabularnewline
-Events & 166829\tabularnewline
-Groups & 2507\tabularnewline
+    Users & 172673\\
+    Events & 166829\\
+    Groups & 2507\\
 \bottomrule
-\caption{LA中近两年的meetup数据}
-\label{t1}
-
-\end{longtable}
+    \end{tabular*}
+  \end{center}
+\end{table}
 
 我们使用一个七元组来表示\textit{meetup}中的一个事件\(e_{id}(id,t,d,h,a,l,c)\),其中\(t\)是事件举办时间，\(d\)是事件描述，\(h\)是事件所在组，\(a\)是事件参与人，\(l\)是事件所在地点。\(c\)是事件主题：meetup的事件有36个主题。以及三元组来表示组\(g_{id}(id,e,m,c)\)，其中\(e\)是事件，\(m\)是组内成员，\(c\)是该组的主题。注意到这里并没有关注成员和组的兴趣标签，虽然它在事件安排和事件推荐中的作用非常大，但在本文显然不是值得注意的信息。
 
@@ -79,10 +79,12 @@ Groups & 2507\tabularnewline
 \subsubsection{拉索回归}
 
 拉索回归是线性回归的一种，与传统线性回归的损失函数不同的是，它的损失函数中包含了其回归系数的绝对值的罚函数。由于其采用了罚函数的绝对值而非平方，导致其一些系数归零，可以借此选出些重要的变量\cite{tibshirani_regression_1996}，因此我们可以对参与人数进行回归，来挑选出对参与人数影响比较大的单词\cite{noauthor_predicting_nodate}。
-
-\[
+\begin{equation}
 argmin\left\{\displaystyle\sum_{i=1}^N\left(y_i-\beta_0-\displaystyle\sum_j\beta_jx_{ij}\right)\right\}
-\] \[subject\ to \displaystyle\sum_j|\beta_j|\leq\alpha\]\\
+\end{equation}
+\begin{equation}
+subject\ to \displaystyle\sum_j|\beta_j|\leq\alpha\
+\end{equation}
 
 其中\(y_i\)为第\(i\)个目标即参与人数，\(x_{ij}\)为\(e_i^d\)中第\(j\)个单词。\(\alpha,\beta_0\)为预先设定的参数。
 \subsection{文本处理}\label{3.2}
@@ -90,24 +92,28 @@ argmin\left\{\displaystyle\sum_{i=1}^N\left(y_i-\beta_0-\displaystyle\sum_j\beta
 这里我们使用独热编码对文本建模，并去除停止词和非英文单词。我们希望使用拉索回归来寻找对参与人数影响最大的
 单词，并得到一个可以解释的结果。因此我们需要确定合适的惩罚系数，使大多数参数归零。为了找到合适的参数，我们使用了网格搜索和交叉验证的方式，最终发现惩罚系数在1.236*1e-1的时候结果最为理想。在这次实验中，我们随机挑选了100个组，其中包含了8673个事件，去除相同事件后还剩5579个事件。将这些事件的事件描述作为输入，对它们的参与人数进行回归后挑选出了系数最高和最低的8个词，如表(\ref{t2})所示，需要注意的是这里并没有考虑其他事件属性对参与人数的影响。
 
-\begin{longtable}[HTBP]{@{}lc@{}}
-\toprule
-系数最高的8个词 & 系数最低的8个词\tabularnewline
-\midrule
-\endhead
-christmas & week\tabularnewline
-dance & saga\tabularnewline
-directions & meditation\tabularnewline
-cocktails & information\tabularnewline
-concerts & salt\tabularnewline
-band & mammoth\tabularnewline
-perfect & spiritual\tabularnewline
-tribute & masked\tabularnewline
-drinks & learn\tabularnewline
-\bottomrule
+\begin{table}[htbp]
 \label{t2}
 \caption{对参与人数的影响比较重要的词}
-\end{longtable}
+
+  \begin{center}
+    \begin{tabular*}{\linewidth}{p{0.15\linewidth}p{0.35\linewidth}p{0.35\linewidth}p{0.15\linewidth}}
+\toprule      
+    &系数最高的8个词 & 系数最低的8个词&\tabularnewline
+\midrule
+&christmas & week&\tabularnewline
+&dance & saga&\tabularnewline
+&directions & meditation&\tabularnewline
+&cocktails & information&\tabularnewline
+&concerts & salt&\tabularnewline
+&band & mammoth&\tabularnewline
+&perfect & spiritual&\tabularnewline
+&tribute & masked&\tabularnewline
+&drinks & learn&\tabularnewline
+\bottomrule
+    \end{tabular*}
+  \end{center}
+\end{table}
   
 其中有些词符合人的主观判断，例如cocktails，drinks等，有些则不那么直观，比如spiritual（这个词出现在一个教堂组织的礼拜活动中），不过这个实验结果从某些程度上印证了我们的猜想：在聚会活动中，一起开party显然比一起做礼拜要有吸引力。
 
@@ -121,15 +127,16 @@ drinks & learn\tabularnewline
 
 \textbf{（1） 主题相似度} \(group\_cat\_sim:\)
 
-\[
+\begin{equation}
 group\_cat\_sim(i,j)=\frac{|g_i^c\bigcap g_j^c|}{|g_i^c|}
-\]
+\end{equation}
+
 
 \textbf{（2） 成员相似度} \(group\_mem\_sim:\)
 
-\[
+\begin{equation}
 group\_mem\_sim(i,j)=\frac{|g_i^m\bigcap g_j^m|}{|g_i^m|}
-\]
+\end{equation}
 
 通过这两个矩阵的线性组合，我们就能衡量出两个组间的相似度。
 
@@ -137,17 +144,17 @@ group\_mem\_sim(i,j)=\frac{|g_i^m\bigcap g_j^m|}{|g_i^m|}
 
 和组主题相似度类似，定义如下：
 
-\[
+\begin{equation}
 event\_cat\_sim(i,j)=\frac{|e_i^c\bigcap e_j^c|}{|e_i^c|}
-\]
+\end{equation}
 
 \subsubsection{时间相似度}
 
 我们希望相似的事件在时间上也更接近，时间相似度越大。同时我们也希望确保时间相似度的值域能在\([0,1)\)之间，因此，使用负指数函数。
 
-\[    
+\begin{equation}   
 time\_sim(i,j)=\mathrm{e}^\frac{-|e_i^t-e_j^t|}{\alpha}
-\]
+\end{equation}
 
 其中\(\alpha\)为参数。
 
@@ -155,17 +162,19 @@ time\_sim(i,j)=\mathrm{e}^\frac{-|e_i^t-e_j^t|}{\alpha}
 
 同样的，距离越近的事件地点相似度越高。这里使用haversine公式计算出两点之间的距离
 
-\[    
+\begin{equation}   
 loc\_sim(i,j)=\mathrm{e}^\frac{-|e_i^l-e_j^l|}{\alpha}
-\]
+\end{equation}
 
 \subsubsection{事件相似度}
 基于以上5个矩阵，我们定义如下事件相似矩阵：
 
-\[    
+\begin{equation}   
+  \begin{split}
 event\_sim(i,j)=\alpha*group\_mem\_sim+\beta*group\_cat\_sim
 +{c}*time\_sim+{d}*loc\_sim+{e}*event\_cat\_sim
-\]
+  \end{split}
+\end{equation}
 
 其中\(\{\alpha,\beta,{c},{d},{e}\}\)都是归一化后的参数，至于阈值\(\gamma\)的选择则应该参考\(event\_sim\)的值的分布，在实验中我们使用了前20\%的数值。
 
@@ -186,15 +195,16 @@ event\_sim(i,j)=\alpha*group\_mem\_sim+\beta*group\_cat\_sim
   \begin{minipage}[t]{0.48\textwidth}
   \centering
   \includegraphics[width=6cm]{event_sim.png}
-  \caption{热力图}
+  \caption*{热力图}
   \label{ff1}
   \end{minipage}
   \begin{minipage}[t]{0.48\textwidth}
   \centering
   \includegraphics[width=6cm]{event_sim_dist.png}
-  \caption{分布}
+  \caption*{分布}
   \label{ff2}
   \end{minipage}
+  \caption{实验结果}
 \end{figure}
 
 可以看出相似矩阵值在0.5附近有较大的差异，并且分布比例也恰好在8:2左右，因此我们把阈值取为0.5。然后我们通过事件成功的定义来对所有事件的成功性进行标注。
@@ -226,19 +236,20 @@ event\_sim(i,j)=\alpha*group\_mem\_sim+\beta*group\_cat\_sim
 
 为了能更进一步的说明事件描述的加入提高了模型的解释能力，我们使用了混合模型对参与人数与事件的属性之间的关系进行描述。注意到这里我们并不是想根据事件去推算参与人数，而是想给予此判断事件描述在整个模型中起的作用。我们建立的混合模型如下：
 
-\[
+\begin{equation}
 y_{ijkm}=\beta_0+log|g_i^m|+\gamma_j+\alpha_k+ (\phi_m) +\epsilon_{ijkm}
-\]
+\end{equation}
 
 其中\(\gamma_j\)，\(\alpha_k\)和\(\phi_m\)为事件主题，事件举办人和事件描述的随机效应，固定效应为组内人数。这里没有将事件举办地点纳入考虑范围是因为事件举办地点太多，大多数情况下事件的举办地点都不一样，如果将其考虑进来，会使样本过于稀疏，降低模型的解释性。
 
 Nakagawa和Schielzeth\cite{nakagawa_ageneralandsimplemethodforobtaining_2013}提出了衡量混合模型中的确定系数\(R^2\)，在混合模型中，确定系数分为两种，一是\(R_m^2\)，衡量固定效应对模型的作用，二是\(R_c^2\)，衡量所有效应对模型的作用。计算方法如下：
 
-\[
+\begin{equation}
 R_m^2=\frac{\sigma_m^2}{\sigma_m^2+\sigma_\gamma^2+\sigma_\alpha^2+(\sigma_\phi^2)+\alpha_\epsilon^2}
-\] \[
+\end{equation}
+\begin{equation}
 R_c^2=\frac{\sigma_m^2+\sigma_\gamma^2+\sigma_\alpha^2+(\sigma_\phi^2)}{\sigma_m^2+\sigma_\gamma^2+\sigma_\alpha^2+(\sigma_\phi^2)+\alpha_\epsilon^2}
-\]
+\end{equation}
 
 其中\(\sigma\)为方差。我们使用了R语言中的``lme4''计算包\cite{lme4}实现模型，\(R^2\)的计算使用了R语言中的``MuMIn''计算包\cite{MuMIn}。结果如表(\ref{t3})。
 
@@ -246,14 +257,16 @@ R_c^2=\frac{\sigma_m^2+\sigma_\gamma^2+\sigma_\alpha^2+(\sigma_\phi^2)}{\sigma_m
 	\centering
   \caption{}
   \label{t3}
-	\begin{tabular}{cll}
-		\hline
+	\begin{center}
+    \begin{tabular*}{\linewidth}{p{0.33\linewidth}p{0.33\linewidth}p{0.33\linewidth}}
+  \toprule
                            &  \(R_c^2\) & \(R_m^2\) \\ 
-    \hline
+  \midrule
 		包含事件描述                       & \textbf{0.653} & 0.135 \\ 
     不包事件含描述                        & 0.494 & 0.135 \\ 
-    \hline
-	\end{tabular}
+  \bottomrule
+    \end{tabular*}
+  \end{center}
 \end{table}
 
 可以看出包含事件描述后，\(R_c^2\)显著提高，这说明加入了事件描述后，模型的解释性得到了增强。另一个值得注意的是组的规模对事件参与人数并没有特别显著的影响。
@@ -267,4 +280,4 @@ R_c^2=\frac{\sigma_m^2+\sigma_\gamma^2+\sigma_\alpha^2+(\sigma_\phi^2)}{\sigma_m
 
 总的来说，通过上述实验和方法，我们验证了事件描述对事件参与度是有显著影响的。
 
-% \end{document}
+\end{document}

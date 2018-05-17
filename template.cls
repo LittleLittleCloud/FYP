@@ -9,12 +9,17 @@
 % disable indent globally
 \setlength{\parindent}{2em} 
 % use fontawesome
+\usepackage{fancyhdr}
 
 \usepackage{longtable,booktabs}
 \usepackage[usenames, dvipsnames]{color}
 \usepackage{caption}
 \usepackage{booktabs}
 \usepackage{subcaption}
+\usepackage{amsmath}
+\numberwithin{equation}{section}
+\renewcommand{\theequation}{\thesection-\arabic{equation}}
+
 \definecolor{mygray}{gray}{0.6}
 \RequirePackage[
 	a4paper,
