@@ -26,7 +26,7 @@
 	left=2.6cm,
 	right=2.6cm,
 	top=3cm,
-	bottom=2.5cm,
+  bottom=2.5cm,
 ]{geometry}
 \setlength{\voffset}{0.32cm}%40 
 \setlength{\headsep}{.5cm}%40 
@@ -95,7 +95,7 @@
   {}
 
 % \titlespacing{\section}{0cm}{*1.8}{*1.8}
-\titlespacing{\section}{0em}{0em}{1\baselineskip}
+% \titlespacing{\section}{0em}{1\baselineskip}{1\baselineskip}
 % \renewcommand{\thesection}{\arabic{section}}
 
 
