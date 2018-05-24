@@ -1,14 +1,14 @@
 \documentclass[]{template}
-
+\usepackage{enumitem}
 \begin{document}
 ~
 \section{生成事件描述}
 \subsection{本章概述}
 在前两章，我们首先验证了事件描述对事件成功的影响，以及衡量了事件描述与事件参与人数的关系。后者对于事件组织者尤为重要，因为一个组织者总是会关心他的活动会有多少人参加。而另一个事件组织者十分感兴趣的话题是他该如何写出能够吸引人的事件描述。这便是本章想要解决的问题。
 
-本章在上一章的基础上，设计了一个生成器(\textit{generator})，用来生成事件描述。在考察了诸多文本生成器后，我们在本文使用了变分自编码器\ref{kingma_auto-encoding_2013,bowman_generating_2015}(\textit{variational autoencoder})。这里使用变分自编码器的原因是因为我们希望文本在编码空间内服从我们期望的分布，这样的话可以避免传统编码器所带来的一些问题。然后我们使用上一章设计的基于GRU的神经网络作为判别器(\textit{discrimitor})，组成一个生成对抗网络\ref{goodfellow_generative_2014}。通过设计合理的奖励函数，来训练生成器生成高质量的事件描述。
+本章在上一章的基础上，设计了一个生成器(\textit{generator})，用来生成事件描述。在考察了诸多文本生成器后，我们在本文使用了变分自编码器\ref{kingma_auto-encoding_2013,bowman_generating_2015}(\textit{variational autoencoder})。这里使用变分自编码器的原因是因为我们希望文本在编码空间内服从我们期望的分布，这样的话可以避免传统编码器所带来的一些问题。然后我们使用上一章设计的基于GRU的神经网络作为判别器(\textit{discrimitor})，组成一个生成对抗网络\ref{goodfellow_generative_2014}。我们将其命名为GAN\_PG,通过设计合理的奖励函数，来训练生成器生成高质量的事件描述。
 
-本章的结构如下：首先我们会详细介绍生成器的设计和训练过程，然后我们会对本章使用的生成对抗网络以及奖励函数进行详述，最后我们会在真实的\textit{meetup}数据集上给出实验结果。
+本章的结构如下：首先我们会详细介绍生成器的设计和训练过程，然后我们会对GAN\_PG中使用的生成对抗网络以及奖励函数进行详述，最后我们会在真实的\textit{meetup}数据集上给出实验结果。
 
 \subsection{事件描述生成器}
 \subsubsection{文本生成器}
@@ -31,6 +31,71 @@
 在实际的训练过程中，为了防止损失函数中KL散度降为0，我们还参考了\ref{bowman_generating_2015}中所采用的策略：在训练刚开始时设置KL散度项的权重为零，然后慢慢升到一。这样训练过程其实就分成了两个阶段：第一个阶段，编码器从文本序列中学到尽可能多的信息，但不保证分布符合先验分布。第二阶段，通过增加KL散度项的权重，强迫编码器编得的隐编码尽可能接近先验分布。
 
 \subsection{生成对抗网络}
+通过前文的事件描述生成器，我们可以生成读上去通顺的事件描述。只要训练数据是文法通顺的句子，那么输出也会是文法通顺的句子。我们有两种方式可以获得事件描述：一种是在隐编码空间里面随机采样。这样生成的事件描述语序通顺，但无法保证语义上的一致。另一种是在已知事件描述的隐编码周围采样，由于采用了变分自编码器，相似的文本序列的隐编码在隐空间中也是相近的。当然这里的相似仅是文法上的相似，而非语义上的相似。因此，如果我们采用第二种方法，仅在已知事件描述隐编码的周围采样，我们便可以获得和已知事件描述在文法上一致的新的事件描述。如果我们能找到一种方法，使每次的改变都往我们期望的方向上发生，便可以达到我们想要的效果。正如\ref{noauthor_sequence_nodate}中做的一样。而借助上一章的预测器，我们可以预测新的事件描述的参与人数。而通过设计合理的奖励函数，我们可以让解码器学到如何生成能够在预测器上获得高分的文本序列。但这样做有一个问题：我们不能保证预测器是可靠的，即在预测器上获得高分的文本序列可能并不符合我们的期望，因此在训练生成器的同时，我们还要对预测器进行训练，使之能正确的区分真正的样本和生成的样本，这便是此处用到生成对抗网络的原因了。
+\subsubsection{生成对抗网络简介}
+生成对抗网络(\textit{Generative Adversarial Net}\ref{goodfellow_generative_2014})是Goodfellow于2014年提出的。它包含生成(\textit{generator})模型和判别(\textit{discrimitor})模型。在训练过程中，生成模型的目标是生成能够让判别模型无法分辨出其和真实数据的区别样本，而判别模型的训练目标则是将生成模型生成的假样本从真实样本中区分开来。在标准的生成对抗网络中，我们最大化判别模型正确分类的概率，同时最小化生成模型所生成的样本被判别器正确分类的概率，目标函数见\ref{3-3}。
+\begin{equation}\label{3-3}
+    \mathop{min}_G \mathop{max}_D V(D,G)=E_{x\sim data}[\log D(x)]+E_{x'\sim G_\theta}[\log(1-D(x')]
+\end{equation}
+
+其中，$D,G$分别表示判别和生成模型，$data$表示真实数据集。$G_\theta$表示生成模型产生的假数据。
+\subsubsection{GAN\_PG}
+GAN\_PG的生成模型为本章第二节介绍的事件描述生成器，判别模型为上一章介绍的带GRU的神经网络。判别模型的损失函数为最小化\ref{3-4}式（即在\ref{3-3}前加上负号）。
+\begin{equation}\label{3-4}
+    \mathop{min}_D-E_{x\sim data}[\log D(x)]-E_{x'\sim G_\theta}[\log(1-D(x')]
+\end{equation}
+生成模型的损失函数为最大化\ref{3-5}式。其中$G_\theta,D_\sigma$分别为生成模型和判别模型，\ref{3-5}式的前半部分为在隐编码$z$和已生成的序列$y_{0:t-1}$下，生成当前$y_t$的概率。\ref{3-5}式的后半部分为生成模型生成$y_t$在判别模型所获得的评分（或者奖励）。最大化\ref{3-5}式即最大化生成模型在生成序列的每一步中所获得的评分（或奖励）。
+\begin{equation}\label{3-5}
+\mathop{max}\sum_{\substack{t}}\log G_\theta (y_t|z,y_{0:t-1})*D_\sigma (y_t,y_{0:t-1})
+\end{equation}
+
+接下来的问题是如何衡量生成模型所生成的每一步获得的奖励。因为判别模型只有在生成模型生成完整个序列以后，才能对该序列评分，而\ref{3-5}式所要求的是实时的奖励。在本文中，参考\ref{yu_seqgan:_2016}中所用的方法，对于$t$时刻所生成的序列$y_t$，我们使用了策略网络$G_\theta$（即当前生成模型）通过蒙特卡洛搜索算法对接下来$T-t$项（T为序列长度）进行采样，即式\ref{3-6}。
+\begin{equation}\label{3-6}
+    \{y_0,y_1,\dotsb,y_T\}=\mathrm{MC}^{G_\theta}(y_{0:T})
+\end{equation}
+
+其中$y_{0:t}$为当前状态，$y_{t+1:T}$为基于当前生成器装态采样的结果。为了获得更准确的结果，我们可以将上述过程重复数次，取平均。经过改进的生成模型目标函数如式\ref{3-7}。
+\begin{equation}\label{3-7}
+D_\sigma(y_t,y_{0:T-1})\sim 
+\begin{cases}
+    D_\theta(y_{0:T-1}) & \text{if } t =T-1 \\
+    \mathrm{E}(D_\theta(y_{0:t-1}:y_t:y_{t+1:T-1})),y_{t+1:T-1}\sim \mathrm{MC}^{G_\theta}(y_{0:t}) & \text{if }t<T-1
+\end{cases}
+\end{equation}
+在确定了判别器，生成器和其分别的目标函数后，我们通过算法\ref{s3-1}来训练GAN\_PG。
+\linespread{0}
+\begin{table}[htbp]
+    \label{s3-1}
+    \begin{center}
+        \begin{tabular*}{.5\linewidth}{p{0.5\linewidth}}
+\toprule
+            算法一、训练GAN\_PG \\
+\midrule
+\begin{minipage}[t]{\linewidth}
+\begin{enumerate}[itemsep=-2pt]
+    \item 预训练生成模型
+    \item 预训练判别模型
+    \item \textbf{repeat}
+    \item \quad \textbf{for} g-step \textbf{do}
+    \item \quad \quad 使用$G_\theta$生成序列$S_{0:T}$
+    \item \quad \quad 使用式\ref{3-7}计算目标函数
+    \item \quad \quad 更新参数$\theta$
+    \item \quad \textbf{end for}
+    \item \quad \textbf{for} d-step \textbf{do}
+    \item \quad \quad 采集\textbf{n}个负样本，\textbf{m}个正样本
+    \item \quad \quad 计算与目标的均方误差
+    \item \quad \quad 更新参数
+    \item \quad \textbf{end for}  
+    \item \textbf{end for}
+\end{enumerate}
+\end{minipage}\\
+\bottomrule
+        \end{tabular*}
+    \end{center}
+\end{table}
+\linespread{1.3}
+
+
 
 
 
