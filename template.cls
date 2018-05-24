@@ -15,6 +15,8 @@
 \usepackage{booktabs}
 \usepackage{subcaption}
 \usepackage{amsmath}
+\usepackage{enumitem}
+
 \numberwithin{equation}{section}
 \renewcommand{\thefigure}{\thesection-\arabic{figure}}
 \renewcommand{\theequation}{\thesection-\arabic{equation}}
@@ -97,7 +99,13 @@
 % \titlespacing{\section}{0cm}{*1.8}{*1.8}
 % \titlespacing{\section}{0em}{1\baselineskip}{1\baselineskip}
 % \renewcommand{\thesection}{\arabic{section}}
+\titleformat{\paragraph}
+{\normalsize\scshape}
+{\arabic{paragraph}）}{0em}
+{}
 
+\titlespacing{\paragraph}
+{2em}{*1.8}{*0.6}
 
 \titlespacing{\subsection}{0cm}{1\baselineskip}{.5\baselineskip}
 

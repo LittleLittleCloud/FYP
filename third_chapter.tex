@@ -1,7 +1,6 @@
 \documentclass[]{template}
-\usepackage{enumitem}
+\setcounter{secnumdepth}{4}
 \begin{document}
-~
 \section{生成事件描述}
 \subsection{本章概述}
 在前两章，我们首先验证了事件描述对事件成功的影响，以及衡量了事件描述与事件参与人数的关系。后者对于事件组织者尤为重要，因为一个组织者总是会关心他的活动会有多少人参加。而另一个事件组织者十分感兴趣的话题是他该如何写出能够吸引人的事件描述。这便是本章想要解决的问题。
@@ -21,7 +20,7 @@
 可以看出，其损失函数由两部分构成，第一部分是负对数似然损失函数，用来缩小输入序列和输出序列的差异。第二个部分则是kl散度，其中$q_\theta$为编码器，$p(z)$为对隐编码$z$的先验分布。
 
 \subsubsection{事件描述生成器}
-我们参考了\ref{bowman_generating_2015}，设计了如下事件描述生成器\ref{}。在编码器和解码器的选择上，我们都使用了单层GRU。在实现过程中，我们使用$0-1$高斯分布作为隐编码的先验分布。同时使用了重采样\ref{kingma_auto-encoding_2013}的技巧，这样我们便可以用反向传播来训练我们的网络。在训练中，我们使用随机梯度下降的算法，在抽样的时候，我们不直接对隐编码进行抽样，而是通过两个线性神经网络获得当前编码的平均值$\bar{u}$标准差$\bar{v}$，然后通过公式\ref{3-2}获得隐编码，其中$\bar\epsilon \sim Normal(0,1)$。
+我们参考了\ref{bowman_generating_2015}，设计了如下事件描述生成器（这里缺张图）\ref{}。在编码器和解码器的选择上，我们都使用了单层GRU。在实现过程中，我们使用$0-1$高斯分布作为隐编码的先验分布。同时使用了重采样\ref{kingma_auto-encoding_2013}的技巧，这样我们便可以用反向传播来训练我们的网络。在训练中，我们使用随机梯度下降的算法，在抽样的时候，我们不直接对隐编码进行抽样，而是通过两个线性神经网络获得当前编码的平均值$\bar{u}$标准差$\bar{v}$，然后通过公式\ref{3-2}获得隐编码，其中$\bar\epsilon \sim Normal(0,1)$。
 \begin{equation}\label{3-2}
     z=\bar{u}+\bar{v}\odot \bar\epsilon
 \end{equation}
@@ -62,12 +61,13 @@ D_\sigma(y_t,y_{0:T-1})\sim
     \mathrm{E}(D_\theta(y_{0:t-1}:y_t:y_{t+1:T-1})),y_{t+1:T-1}\sim \mathrm{MC}^{G_\theta}(y_{0:t}) & \text{if }t<T-1
 \end{cases}
 \end{equation}
+
 在确定了判别器，生成器和其分别的目标函数后，我们通过算法\ref{s3-1}来训练GAN\_PG。
 \linespread{0}
 \begin{table}[htbp]
     \label{s3-1}
     \begin{center}
-        \begin{tabular*}{.5\linewidth}{p{0.5\linewidth}}
+        \begin{tabular*}{.75\linewidth}{p{0.75\linewidth}}
 \toprule
             算法一、训练GAN\_PG \\
 \midrule
@@ -95,8 +95,60 @@ D_\sigma(y_t,y_{0:T-1})\sim
 \end{table}
 \linespread{1.3}
 
+\subsection{实验}
+在本小节，我们将在真实的数据集上验证我们的方法，本章采用的数据集和第一，第二章相同，在此不多做介绍。本章的结构将分为两个部分，第一部分阐述事件描述生成器，即生成模型的预训练，第二部分描述判别模型和GAN\_PG的训练\footnote{本次实验所用代码可以在https://github.com/LittleLittleCloud/sentence-generator.git上下载到}。
+\subsubsection{训练事件描述生成器}
+在训练事件描述生成器时，我们要保证其目标函数(\ref{3-1}的两部分处在合适的平衡状态。因为一方面我们前半项越小越好，另一方面我们又希望后半项较小又不太小。保证前半项足够小是为了缩小和训练样本的距离，后半项相对较小是为了让其隐编码服从特定分布，但如果后半项太小，则不同训练样本的隐编码过于相似，也失去了编码器的意义。所以前文提及，在训练过程中先让后半项的权重为0，先训练前半项，再慢慢将后半项的权重增加，以训练后半项。在实现过程中，我们用了式(\ref{3-8})来调整后半项的权重，同时为了使后半项值能稳定在$(1,2]$，我们将前半项的系数设置为79。训练的前半项，后半项以及$\mathrm{KL\_Weight}$的变化图如图\ref{}(这里少张图)。接下来，我们将对训练好的生成器进行实验。
+\begin{equation}\label{3-8}
+    \mathrm{KL\_Weight}=\frac{\tanh\frac{i-3000}{1000}+1}{2}
+\end{equation}
 
+\paragraph{对已知样本采样}  
+在本节中，我们将对已知样本的隐编码$z \sim \mathrm{p}(z|x)$进行采样，其中$x$为已知的文本序列，即事件描述。$\mathrm{p}(z|x)$为编码过程。我们通过式（\ref{3-2}）进行采样。通过此举，我们可以对生成器认为的相似的句子有个大概的了解。实验结果如表\ref{t3-2}所示。 
+\begin{table}[htbp]
+    \center
+    \caption{\label{t3-2}对已知样本采样的结果}
+    \begin{tabular*}{\linewidth}{p{0.2\linewidth}p{0.8\linewidth}}
+\toprule
+样本一 & we are meeting at the actual merry go round <ukn> . \\
+对隐编码解码 & we will be meeting at the corner of the park entrance .\\ 
+采样一 & we will be meeting in the back room , and then the <ukn> will be on the right hand side of the stage .\\
+采样二 & we are going to have a great time of year 's theme for the day . \\
+采样三 & we will be meeting at the end of the day before the show . \\
+\midrule
+样本二 & we 'll be there the whole night . \\
+对隐编码解码 & we will have a dj spinning the best of the night !\\ 
+采样一 & we 're going to have a great turnout .\\
+采样二 & the presentation will be on the right side of the road .\\
+采样三 & after the concert we 'll have a chance to visit the bars in the park . \\
+\bottomrule
+    \end{tabular*}
+\end{table}
+\paragraph{随机采样}
+本节中，我们将对未知的隐编码进行采样，同时检验在编码空间中相邻点的编码结果的语义一致性和文法一致性。我们先在隐空间中进行采样，获得隐编码$z_1,z_2 \sim \mathrm{Normal}(0,1)$，然后我们在两点间进行线性插值，获得编码集合$\{z_i\} = t*z_1+(1-t)*z_2 ,\mathrm{for}\ t \in [0,1]$。随后我们再对集合$\{z_i\}$进行采样，采样结果见表\ref{t3-3}。借助此举，我们可以了解到在隐空间中，相临隐编码在解码后的文本序列上的相似性和主题的一致性。 
 
+\begin{table}[htbp]
+    \center
+    \caption{\label{t3-3}随机采样结果（加粗部分为起点和终点）}
+    \begin{tabular*}{\linewidth}{p{\linewidth}}
+\toprule
+\textbf{the event is free , but donations will be greatly appreciated .}\\
+the event is free , but you must rsvp on meetup . \\
+we 'll be meeting at the corner of the santa monica pier and walk to the parking lot .\\
+join us for a fun evening of the evening !\\
+\textbf{join us for a fun evening of dancing , fun , and fun !}\\
+\midrule
+\textbf{this will be a fun night to meet other people and make new friends .}\\
+the event is free , but you must rsvp on meetup . \\
+this is a great opportunity to meet new people and make new friends .\\
+join us for a fun filled day of fun , fun and fun ! \\
+\textbf{join us for a fun filled day of fun and socializing with other fun singles . }\\
+\bottomrule
+    \end{tabular*}
+\end{table}
+
+\paragraph{文法检验}
+在这里我们使用BLEU指标\ref{papineni_bleu:_2002}对事件描述生成器生成的文本进行文法检验。
 
 
 
