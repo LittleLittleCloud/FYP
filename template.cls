@@ -120,3 +120,14 @@
     \small
     \renewcommand{\arraystretch}{1.5}
 }
+
+
+\setcounter{secnumdepth}{4}
+
+\newlength\mystoreparindent
+\newenvironment{myparindent}[1]{%
+\setlength{\mystoreparindent}{\the\parindent}
+\setlength{\parindent}{#1}
+}{%
+\setlength{\parindent}{\mystoreparindent}
+}
