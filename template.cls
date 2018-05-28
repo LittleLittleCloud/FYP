@@ -11,7 +11,7 @@
 \usepackage{fancyhdr}
 \usepackage{longtable,booktabs}
 \usepackage[usenames, dvipsnames]{color}
-\usepackage{caption}
+\usepackage[skip=0pt,font=small]{caption}
 \usepackage{booktabs}
 \usepackage{subcaption}
 \usepackage{amsmath}
@@ -112,15 +112,49 @@
 % \renewcommand{\subsection}{\arabic{section}.\arabic{subsection} }
 % \renewcommand{\subsubsection}{\arabic{subsubsection}.}
 
+\makeatletter
+\def\toprule{%
+  \noalign{\ifnum0=`}\fi\hrule \@height \thickarrayrulewidth \futurelet
+   \reserved@a\@xthickhline}
+\def\@xthickhline{\ifx\reserved@a\thickhline
+               \vskip\doublerulesep
+               \vskip-\thickarrayrulewidth
+             \fi
+      \ifnum0=`{\fi}}
+\makeatother
+
+\makeatletter
+
+\makeatletter
+\def\bottomrule{%
+  \noalign{\ifnum0=`}\fi\hrule \@height \thickarrayrulewidth \futurelet
+   \reserved@a\@xthickhline}
+\def\@xthickhline{\ifx\reserved@a\thickhline
+               \vskip\doublerulesep
+               \vskip-\thickarrayrulewidth
+             \fi
+      \ifnum0=`{\fi}}
+\makeatother
+\newlength{\thickarrayrulewidth}
+\setlength{\thickarrayrulewidth}{1.5pt}
 
 \let\oldtable=\table
 \renewcommand\table[1][]{
-    \vskip0.25\baselineskip
+    \small    
+    \renewcommand{\arraystretch}{1.0}
+    % \setlength{\belowcaptionskip}{-10pt}  
+    % \setlength{\abovecaptionskip}{-10pt} 
     \oldtable[#1]
-    \small
-    \renewcommand{\arraystretch}{1.5}
 }
 
+\let\oldfigure=\figure
+\renewcommand\figure[1][]{
+    \small    
+    \renewcommand{\arraystretch}{1.0}
+    % \setlength{\belowcaptionskip}{-10pt}  
+    % \setlength{\abovecaptionskip}{-10pt} 
+    \oldfigure[#1]
+}
 
 \setcounter{secnumdepth}{4}
 
@@ -131,3 +165,5 @@
 }{%
 \setlength{\parindent}{\mystoreparindent}
 }
+
+\setlength{\intextsep}{8pt}
