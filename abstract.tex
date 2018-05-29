@@ -1,0 +1,36 @@
+% \documentclass[12pt]{template}
+% \begin{document}
+
+\begin{myparindent}{0pt}
+    \textbf{论文题目：面向EBSN网络的事件预测与评价 }\\
+    \textbf{学生姓名：张晓云}\\
+    \textbf{指导教师：孙鹤立}
+\end{myparindent}
+\section*{摘\quad 要\markboth{摘\quad 要}{}}
+
+作为直到2014年才被提出的模型，EBSN网络获得的关注度正在逐年提升。事件，作为EBSN网络的节点之一，在EBSN网络中占有举足轻重的地位。而理解事件描述对事件参与度的影响，对预测事件参与人数，设计事件推荐和事件安排系统，有重大的意义。本文着重研究了事件描述与事件参与度的关系，并比较了不同的文本处理方式对事件预测结果的影响。最后，本文尝试在原有事件描述的基础上，生成新的事件描述。
+
+本文的结构分为三章，第一章给出了事件预测问题的定义，使用最基本的文本处理方式来处理事件描述属性，并将其用在了事件预测模型上。实验证明，在加入事件描述以及平衡了数据集以后，我们的预测模型对事件举办结果能达到百分之八十的准确率。在第二章，我们重新设计了带卷积层的神经网络和带GRU的神经网络用来处理文本属性，并使用实验证明带GRU的神经网络能够将预测的准确率提升二个百分点。第三章我们则着重考察了文本生成模型在自动撰写事件描述上的运用，我们使用了变分自编码器和生成对抗网络来生成我们想要的事件描述，并比较了其和真实事件描述的差异。
+\\
+\\
+\begin{myparindent}{0pt}
+    \small\textbf{关\ 键\ 词：EBSN;事件结果预测;自然语言处理;变分自编码器;生成对抗网络 }
+\end{myparindent}
+\newpage
+\begin{myparindent}{0pt}
+    \textbf{Title:Prediction and evaluation towards the event participation  of EBSN}\\
+    \textbf{Name:\qquad\quad Zhang Xiaoyun}\\
+    \textbf{Supervisor:\, Sun Heli}
+\end{myparindent}
+\section*{ABSTRACT\markboth{ABSTRACT}{}}
+
+\begin{myparindent}{0pt}
+As a model that was not introduced until 2014, the degree of attention gained by the EBSN network is increasing year by year. Event, as one of the node of the EBSN network, plays a significant role in the EBSN network. Understanding the impact of event descriptions on event participation has significant implications for predicting the number of event participants, designing event recommendation and event arrangement system. This paper's main contribution focuses on studying the relationship between event description and event participation, comparing the pros and cons of different text processing methods when applying to event participation prediction, and trying to generate new event description based on original ones, the last of which, based on the best of our knowledge, is the first attempt in this area.
+\\
+\\
+The structure of this paper can be divided into three chapters. In the first chapter, the problem definition of event participation is given, and the most basic text processing method is used to predict the event participation. Experiments have shown that after adding event descriptions and balancing data set, our model can achieve an accuracy of 80 percent. In Chapter 2, we design two kinds of predictor, neural networks with convolutional layers and neural networks with GRUs, to deal with event prediction. Experiments show that neural networks with GRUs can improve prediction accuracy by two percentage points, which proves the power of new predictor. In chapter 3, we focus on the use of text generation models to automatically write event descriptions. We use a variational auto-encoder and GAN to generate the expected event description, and compare it with the description of real events.
+\\
+\\
+\textbf{KEY WORDS}:EBSN;Event participation prediction, NLP,VAE,GAN 
+\end{myparindent}
+% \end{document}
