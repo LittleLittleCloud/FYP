@@ -75,24 +75,25 @@
   \hrule width 0.25\paperwidth height 0.5pt
   \kern 2pt
 }
+\titleformat{\section}[display]{\Large\center}{}{1.25em}{\vspace{-1.55em}}[]
 
-
-\titleformat{\section}         % Customise the \section command 
-  {\Large\scshape\center} % Make the \section headers large (\Large),
-                               % small capitals (\scshape) and left aligned (\raggedright)
-  {\thesection}{1em}                      % Can be used to give a prefix to all sections, like 'Section ...'
-  {}                           % Can be used to insert code before the heading
+% \titleformat{\section}         % Customise the \section command 
+%   {\Large\scshape\center} % Make the \section headers large (\Large),
+%                                % small capitals (\scshape) and left aligned (\raggedright)
+%   {\thesection}{1em}                      % Can be used to give a prefix to all sections, like 'Section ...'
+%   {}
+%   {}                           % Can be used to insert code before the heading
   
 \titleformat{\subsection}
   {\large\raggedright\scshape}
-  {\thesubsection}{1em}
+  {\thesubsection}{.3em}
   {}
   {}
-\titlespacing{\subsubsection}{2em}{*1.8}{*0.6}
+\titlespacing{\subsubsection}{2em}{*1.8}{0\baselineskip}
 
 \titleformat{\subsubsection}
   {\normalsize\scshape}
-  {\thesubsubsection}{1em}
+  {\thesubsubsection}{.3em}
   {}
   {}
 
@@ -104,8 +105,7 @@
 {\arabic{paragraph}）}{0em}
 {}
 
-\titlespacing{\paragraph}
-{2em}{*1.8}{*0.6}
+\titlespacing{\paragraph}{2em}{0\baselineskip}{0\baselineskip}
 
 \titlespacing{\subsection}{0cm}{1\baselineskip}{.5\baselineskip}
 
@@ -167,3 +167,6 @@
 }
 
 \setlength{\intextsep}{8pt}
+
+
+\usepackage[square,sectionbib]{natbib}
