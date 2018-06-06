@@ -1,0 +1,125 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: fyp.aux
+A level-1 auxiliary file: abstract.aux
+A level-1 auxiliary file: introduction.aux
+A level-1 auxiliary file: related_work.aux
+A level-1 auxiliary file: first_chapter.aux
+A level-1 auxiliary file: second_chapter.aux
+A level-1 auxiliary file: third_chapter.aux
+A level-1 auxiliary file: conclusion.aux
+A level-1 auxiliary file: acknowledgement.aux
+The style file: gbt7714-2005.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: ref.bib
+Warning--entry type for "EBSN_linking" isn't style-file defined
+--line 1 of file ref.bib
+Warning--string name "feb" is undefined
+--line 22 of file ref.bib
+Warning--entry type for "EBSN_on_social" isn't style-file defined
+--line 28 of file ref.bib
+Warning--string name "sep" is undefined
+--line 55 of file ref.bib
+Warning--entry type for "EBSN_feedback-aware_2017" isn't style-file defined
+--line 60 of file ref.bib
+Warning--entry type for "EBSN_conflict-aware_2015" isn't style-file defined
+--line 70 of file ref.bib
+Warning--string name "apr" is undefined
+--line 76 of file ref.bib
+Warning--entry type for "EBSN_understanding" isn't style-file defined
+--line 81 of file ref.bib
+Warning--entry type for "EBSN_can_i" isn't style-file defined
+--line 91 of file ref.bib
+Warning--entry type for "Chinese_Poetry" isn't style-file defined
+--line 104 of file ref.bib
+Warning--entry type for "EBSN_who_will" isn't style-file defined
+--line 114 of file ref.bib
+Warning--entry type for "noauthor_predicting_nodate" isn't style-file defined
+--line 152 of file ref.bib
+Warning--string name "feb" is undefined
+--line 168 of file ref.bib
+Warning--string name "sep" is undefined
+--line 182 of file ref.bib
+Warning--string name "dec" is undefined
+--line 209 of file ref.bib
+Warning--string name "jun" is undefined
+--line 220 of file ref.bib
+Warning--string name "nov" is undefined
+--line 232 of file ref.bib
+Warning--entry type for "noauthor_sequence_nodate" isn't style-file defined
+--line 237 of file ref.bib
+Warning--entry type for "papineni_bleu:_2002" isn't style-file defined
+--line 249 of file ref.bib
+Warning--string name "jul" is undefined
+--line 257 of file ref.bib
+Warning--entry type for "mikolov_rnnlm_2011" isn't style-file defined
+--line 263 of file ref.bib
+Warning--string name "dec" is undefined
+--line 266 of file ref.bib
+Warning--entry type for "gu_context_2016" isn't style-file defined
+--line 271 of file ref.bib
+Warning--string name "oct" is undefined
+--line 277 of file ref.bib
+Warning--string name "may" is undefined
+--line 303 of file ref.bib
+Warning--string name "aug" is undefined
+--line 329 of file ref.bib
+Warning--Unsupported entry type for EBSN_linking
+Warning--Unsupported entry type for EBSN_on_social
+Warning--Unsupported entry type for EBSN_feedback-aware_2017
+Warning--Unsupported entry type for EBSN_conflict-aware_2015
+Warning--Unsupported entry type for EBSN_understanding
+Warning--Unsupported entry type for EBSN_can_i
+Warning--Unsupported entry type for EBSN_who_will
+Warning--Unsupported entry type for gu_context_2016
+Warning--Require citedate: event_organization_101
+Warning--Unsupported entry type for mikolov_rnnlm_2011
+Warning--Unsupported entry type for Chinese_Poetry
+Warning--Unsupported entry type for noauthor_sequence_nodate
+Warning--Require journal: lin_adversarial_2017
+Warning--Unsupported entry type for noauthor_predicting_nodate
+Warning--Unsupported entry type for papineni_bleu:_2002
+You've used 28 entries,
+            3050 wiz_defined-function locations,
+            868 strings with 11268 characters,
+and the built_in function-call counts, 25047 in all, are:
+= -- 2777
+> -- 66
+< -- 121
++ -- 2336
+- -- 167
+* -- 693
+:= -- 2983
+add.period$ -- 0
+call.type$ -- 28
+change.case$ -- 76
+chr.to.int$ -- 0
+cite$ -- 30
+duplicate$ -- 3387
+empty$ -- 824
+format.name$ -- 152
+if$ -- 6709
+int.to.chr$ -- 0
+int.to.str$ -- 28
+missing$ -- 0
+newline$ -- 72
+num.names$ -- 15
+pop$ -- 289
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 250
+stack$ -- 0
+substring$ -- 2887
+swap$ -- 608
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 15
+while$ -- 298
+width$ -- 30
+write$ -- 205
+(There were 41 warnings)
