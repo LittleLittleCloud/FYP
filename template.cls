@@ -1,9 +1,9 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{template}[2018/4/24]
 \LoadClass[12pt,twoside]{ctexart}
-\setCJKfamilyfont{BOLD}{Microsoft YaHei}
+% \setCJKfamilyfont{BOLD}{Microsoft YaHei}
 % \setCJKfamilyfont{SONG}{Adobe Fangsong Std}
-\newcommand{\BOLD}{\CJKfamily{BOLD}}
+% \newcommand{\BOLD}{\CJKfamily{BOLD}}
 % \newcommand{\SONG}{\CJKfamily{SONG}}
 % disable indent globally
 \setlength{\parindent}{2em} 

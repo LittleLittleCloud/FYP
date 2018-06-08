@@ -1,8 +1,27 @@
 \documentclass[12pt]{template}
 \usepackage{fancyhdr}
+\usepackage{pdfpages}
+\usepackage{tocloft}
+% \setCJKfamilyfont{SONG}{Adobe Fangsong Std}
+\newcommand{\SONG}{\CJKfamily{SONG}}
+\usepackage{titlesec}  
+\usepackage{titletoc}  
+\renewcommand{\cftdotsep}{1}
+\renewcommand{\cftsecfont}{\normalsize}
+\renewcommand{\cftsecdotsep}{\cftdotsep}
+\renewcommand{\cftsecpagefont}{\normalsize}
+
+% \titlecontents{section}  
+%               [0cm]  
+%               {\normalsize}%  
+%               {\contentslabel{}}%  
+%               {}%  
+%               {\titlerule*[0.5pc]{$\cdot$}\contentspage}%  
+\setlength{\bibsep}{.1pt}
+\renewcommand{\bibpreamble}{\newline\newline}
 \begin{document} 
+\includepdf[pages=-]{preface-0.pdf}
 \pagenumbering{Roman}
-\setcounter{page}{4}
 \include{abstract}
 \newpage
 \tableofcontents
@@ -11,14 +30,16 @@
 \setcounter{page}{1}
 
 \include{introduction}
-\include{related_work}
-\include{first_chapter}
-\include{second_chapter}
-\include{third_chapter}
-\include{conclusion}
-\include{acknowledgement}
-\bibliographystyle{gbt7714-2005}
-\setlength{\bibsep}{0pt}
-\renewcommand{\bibpreamble}{\newline\newline}
-\bibliography{ref} 
+% \include{related_work}
+% \include{first_chapter}
+% \include{second_chapter}
+% \include{third_chapter}
+% \include{conclusion}
+% \include{acknowledgement}
+% \bibliographystyle{gbt7714-2005}
+% \bibliography{ref} 
+% \includepdf[pages={1},pagecommand={\section{附 录A 论文翻译原文}，\pagestyle{fancy}},clip,trim=15mm 25mm 15mm 20mm,width=1.05\linewidth]{translate_en.pdf}
+% \includepdf[pages={2-},pagecommand=\pagestyle{fancy},clip,trim=15mm 25mm 15mm 20mm,width=1.05\linewidth]{translate_en.pdf}
+% \includepdf[pages={1},pagecommand={\section{附 录B 论文翻译译文}}]{translate.pdf}
+% \includepdf[pages={2-},pagecommand={\pagestyle{fancy}}]{translate.pdf}
 \end{document}

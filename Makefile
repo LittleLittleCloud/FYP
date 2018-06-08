@@ -16,6 +16,28 @@ src:
 
 bib: clean $(BIBS)
 
+fyp: fyp.tex translate-0.pdf preface-0.pdf
+	-xelatex fyp.tex 
+	-bibtex fyp.aux 
+	-xelatex fyp.tex 
+	-xelatex fyp.tex 
+	evince fyp.pdf &
+
+translate-0.pdf:translate.pdf
+	pdftops  translate.pdf 
+	epstopdf translate.ps --outfile=translate-0.pdf
+
+preface-0.pdf:preface.pdf 	
+	pdftops  preface.pdf 
+	epstopdf preface.ps --outfile=preface-0.pdf
+
+translation: translation.tex translate.pdf
+	pdftops  translate.pdf 
+	epstopdf translate.ps
+	pdftops  translate_en.pdf 
+	epstopdf translate_en.ps
+	xelatex translation.tex 
+	evince translation.pdf &
 %.bib: %.tex
 	xelatex $(basename $<).tex
 	bibtex $(basename $<).aux
@@ -36,4 +58,4 @@ endif
 
 
 clean:
-	$(RM) *.log *.aux *.bbl *.blg *.synctex.gz *.out *.toc *.lof *.idx *.ilg *.ind *.pdf
+	$(RM) *.log *.aux *.bbl *.blg *.synctex.gz *.out *.toc *.lof *.idx *.ilg *.ind
