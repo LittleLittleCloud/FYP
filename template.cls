@@ -1,6 +1,9 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{template}[2018/4/24]
 \LoadClass[12pt,twoside]{ctexart}
+\usepackage{fontspec}
+\usepackage{array}
+\setmainfont{Times New Roman}
 % \setCJKfamilyfont{BOLD}{Microsoft YaHei}
 % \setCJKfamilyfont{SONG}{Adobe Fangsong Std}
 % \newcommand{\BOLD}{\CJKfamily{BOLD}}
@@ -12,7 +15,6 @@
 \usepackage{longtable,booktabs}
 \usepackage[usenames, dvipsnames]{color}
 \usepackage[skip=0pt,font=small]{caption}
-\usepackage{booktabs}
 \usepackage{subcaption}
 \usepackage{amsmath}
 \usepackage{enumitem}
@@ -75,15 +77,22 @@
   \hrule width 0.25\paperwidth height 0.5pt
   \kern 2pt
 }
-\titleformat{\section}[display]{\Large\center}{}{1.25em}{\vspace{-1.55em}}[]
+% \titleformat{\section}[block]{\Large\center}{}{1.25em}{\begin{center}}[\end{center}]
 
-% \titleformat{\section}         % Customise the \section command 
-%   {\Large\scshape\center} % Make the \section headers large (\Large),
-%                                % small capitals (\scshape) and left aligned (\raggedright)
-%   {\thesection}{1em}                      % Can be used to give a prefix to all sections, like 'Section ...'
-%   {}
-%   {}                           % Can be used to insert code before the heading
+\titleformat{\section}         % Customise the \section command 
+  {\Large\scshape\centering} % Make the \section headers large (\Large),
+                               % small capitals (\scshape) and left aligned (\raggedright)
+  {\thesection}{1em}                      % Can be used to give a prefix to all sections, like 'Section ...'
+  {}                           % Can be used to insert code before the heading
   
+\makeatletter
+\newcommand{\@xjsectiona}[1]{\vspace*{-1\baselineskip}\section*{#1}\addcontentsline{toc}{section}{#1}\renewcommand{\leftmark}{#1}}
+\newcommand{\@xjsectionb}[1]{\vspace*{-1\baselineskip}\section{#1}}
+\newcommand{\xjsection}{\@ifstar{\@xjsectiona}{\@xjsectionb}}  
+\newcommand{\xjrefsection}[1]{\vspace*{-1.06cm}\section*{#1}\vspace*{2\baselineskip}\addcontentsline{toc}{section}{#1}\renewcommand{\leftmark}{#1}}
+\makeatother
+% \newcommand{\xjsection}[2]{\vspace*{-1\baselineskip}\section[]{#1}}
+
 \titleformat{\subsection}
   {\large\raggedright\scshape}
   {\thesubsection}{.3em}
@@ -170,3 +179,12 @@
 
 
 \usepackage[square,sectionbib]{natbib}
+\newcommand{\upcite}[1]{\textsuperscript{\textsuperscript{\cite{#1}}}}
+
+\usepackage{afterpage}
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}

@@ -1,45 +1,62 @@
 \documentclass[12pt]{template}
 \usepackage{fancyhdr}
 \usepackage{pdfpages}
-\usepackage{tocloft}
-% \setCJKfamilyfont{SONG}{Adobe Fangsong Std}
-\newcommand{\SONG}{\CJKfamily{SONG}}
 \usepackage{titlesec}  
 \usepackage{titletoc}  
-\renewcommand{\cftdotsep}{1}
-\renewcommand{\cftsecfont}{\normalsize}
-\renewcommand{\cftsecdotsep}{\cftdotsep}
-\renewcommand{\cftsecpagefont}{\normalsize}
+% \usepackage{tocloft}
+% \setCJKfamilyfont{SONG}{Adobe Fangsong Std}
+\newcommand{\SONG}{\CJKfamily{SONG}}
+\renewcommand{\contentsname}{目~~录} 
+\makeatletter
+\renewcommand \dotfill {\leavevmode \cleaders \hb@xt@ .25em{\hss .\hss }\hfill \kern \z@}
+\makeatother
+\titlecontents{section}[0em]{}{\thecontentslabel\quad}{}{\dotfill\contentspage[{\makebox[0pt][r]{\thecontentspage}}]}
+\titlecontents{subsection}[1.5em]{}{\thecontentslabel\quad}{}{\dotfill\contentspage[{\makebox[0pt][r]{\thecontentspage}}]}
+\titlecontents{subsubsection}[3.8em]{}{\thecontentslabel\quad}{}{\dotfill\contentspage[{\makebox[0pt][r]{\thecontentspage}}]}
+\makeatletter
+\def\@dotsep{0}
+\makeatother
+\setlength{\bibsep}{0pt}
 
-% \titlecontents{section}  
-%               [0cm]  
-%               {\normalsize}%  
-%               {\contentslabel{}}%  
-%               {}%  
-%               {\titlerule*[0.5pc]{$\cdot$}\contentspage}%  
-\setlength{\bibsep}{.1pt}
-\renewcommand{\bibpreamble}{\newline\newline}
+\renewcommand{\bibsection}{\xjrefsection{参考文献}\fontsize{10pt}{9.5pt}\selectfont}
 \begin{document} 
 \includepdf[pages=-]{preface-0.pdf}
+\includepdf[pages=-]{review-0.pdf}
+\includepdf[pages=-]{review-0.pdf}
 \pagenumbering{Roman}
+\setcounter{page}{5}
 \include{abstract}
 \newpage
+
+\vspace*{-1\baselineskip}
 \tableofcontents
 \newpage
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
 \include{introduction}
-% \include{related_work}
-% \include{first_chapter}
-% \include{second_chapter}
-% \include{third_chapter}
-% \include{conclusion}
-% \include{acknowledgement}
-% \bibliographystyle{gbt7714-2005}
-% \bibliography{ref} 
-% \includepdf[pages={1},pagecommand={\section{附 录A 论文翻译原文}，\pagestyle{fancy}},clip,trim=15mm 25mm 15mm 20mm,width=1.05\linewidth]{translate_en.pdf}
-% \includepdf[pages={2-},pagecommand=\pagestyle{fancy},clip,trim=15mm 25mm 15mm 20mm,width=1.05\linewidth]{translate_en.pdf}
-% \includepdf[pages={1},pagecommand={\section{附 录B 论文翻译译文}}]{translate.pdf}
-% \includepdf[pages={2-},pagecommand={\pagestyle{fancy}}]{translate.pdf}
+\include{first_chapter}
+\include{second_chapter}
+\include{third_chapter}
+\include{conclusion}
+\include{acknowledgement}
+\bibliographystyle{gbt7714-2005}
+\bibliography{ref} 
+\fontsize{12pt}{20.5pt}\selectfont
+
+\newpage
+\blankpage
+\setcounter{page}{\thepage+1}
+
+\renewcommand{\leftmark}{附~~录A 论文翻译原文}
+\includepdf[pages={1},pagecommand={\xjsection*{附~~录A 论文翻译原文}，\pagestyle{fancy}},clip,trim=15mm 25mm 15mm 20mm,width=1.05\linewidth]{translate_en.pdf}
+\includepdf[pages={2-},pagecommand=\pagestyle{fancy},clip,trim=15mm 25mm 15mm 20mm,width=1.05\linewidth]{translate_en.pdf}
+\renewcommand{\leftmark}{附~~录B 论文翻译译文}
+\includepdf[pages={1},pagecommand={\xjsection*{附~~录B 论文翻译译文}}]{translate.pdf}
+\includepdf[pages={2-},pagecommand={\pagestyle{fancy}}]{translate.pdf}
+% change odd to even
+\includepdf[pages=-]{xuanti-0.pdf}
+\includepdf[pages=-,landscape=true]{working_schedule-0.pdf}
+\includepdf[pages=-]{midcheck-0.pdf}
+
 \end{document}

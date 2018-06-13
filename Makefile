@@ -16,20 +16,25 @@ src:
 
 bib: clean $(BIBS)
 
-fyp: fyp.tex translate-0.pdf preface-0.pdf
+fyp: clean _fyp
+
+_fyp: fyp.tex translate-0.pdf preface-0.pdf xuanti-0.pdf working_schedule-0.pdf midcheck-0.pdf review-0.pdf
 	-xelatex fyp.tex 
 	-bibtex fyp.aux 
 	-xelatex fyp.tex 
 	-xelatex fyp.tex 
 	evince fyp.pdf &
 
-translate-0.pdf:translate.pdf
-	pdftops  translate.pdf 
-	epstopdf translate.ps --outfile=translate-0.pdf
+%-0.pdf:%.pdf 
+	pdftops $<
+	epstopdf $*.ps --outfile=$*-0.pdf
+# translate-0.pdf:translate.pdf
+# 	pdftops  translate.pdf 
+# 	epstopdf translate.ps --outfile=translate-0.pdf
 
-preface-0.pdf:preface.pdf 	
-	pdftops  preface.pdf 
-	epstopdf preface.ps --outfile=preface-0.pdf
+# preface-0.pdf:preface.pdf 	
+# 	pdftops  preface.pdf 
+# 	epstopdf preface.ps --outfile=preface-0.pdf
 
 translation: translation.tex translate.pdf
 	pdftops  translate.pdf 
